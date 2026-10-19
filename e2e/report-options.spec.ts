@@ -1,0 +1,30 @@
+import { test, expect } from '@playwright/test';
+
+test('common repairs remain editable and priority buttons preserve explicit selection', async ({ page }) => {
+  await page.goto('/');
+  const normal = page.getByRole('radio', { name: 'Normal', exact: true });
+  const urgent = page.getByRole('radio', { name: 'Urgent', exact: true });
+  await expect(normal).toBeChecked();
+  await expect(page.locator('.priority-normal > span')).toHaveCSS('background-color', 'rgb(20, 27, 45)');
+  await expect(page.locator('.priority-normal > span')).toHaveCSS('color', 'rgb(255, 255, 255)');
+  await page.locator('.priority-urgent').hover();
+  await expect(page.locator('.priority-urgent > span')).toHaveCSS('background-color', 'rgb(201, 48, 44)');
+  await expect(page.locator('.priority-urgent > span')).toHaveCSS('color', 'rgb(255, 255, 255)');
+  await expect(normal).toBeChecked();
+  await expect(urgent).not.toBeChecked();
+  await page.getByLabel('Common repairs (optional)').selectOption('Garden fence damaged');
+  await expect(page.getByLabel('What needs repairing?')).toHaveValue('Garden fence damaged');
+  await expect(page.getByLabel('What needs repairing?')).toBeFocused();
+  await page.getByLabel('What needs repairing?').fill('Garden fence damaged beside the side gate');
+  await urgent.check();
+  await page.getByRole('button', { name: 'Report repair', exact: true }).click();
+  await expect(page.getByText('Enter the reporter’s name.')).toBeVisible();
+  await expect(urgent).toBeChecked();
+  await expect(page.getByLabel('What needs repairing?')).toHaveValue('Garden fence damaged beside the side gate');
+  await page.getByLabel('Reporter name').fill('Alex Morgan');
+  await page.getByRole('button', { name: 'Report repair', exact: true }).click();
+  const details = page.getByRole('region', { name: 'Repair details' });
+  await expect(details.locator('.repair-description')).toHaveText('Garden fence damaged beside the side gate');
+  await expect(details.locator('.details')).toContainText('Urgent');
+  await expect(normal).toBeChecked();
+});

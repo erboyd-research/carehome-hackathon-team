@@ -2,6 +2,8 @@ import { useRef, useState, type FormEvent } from 'react';
 import type { FieldErrors, Priority, Repair, ReportInput, Result } from '../../domain/types';
 import './reporting.css';
 
+const commonRepairs = ['Garden fence damaged', 'Kitchen light not working', 'Leaking tap', 'Door or lock not closing', 'Heating not working', 'Window damaged'];
+
 interface Props {
   onCreate: (input: ReportInput) => Result<Repair>;
   onSaved: (job: Repair) => void;
@@ -11,6 +13,7 @@ export function RepairForm({ onCreate, onSaved }: Props) {
   const [description, setDescription] = useState('');
   const [reporter, setReporter] = useState('');
   const [priority, setPriority] = useState<Priority>('Normal');
+  const [commonRepair, setCommonRepair] = useState('');
   const [errors, setErrors] = useState<FieldErrors>({});
   const descriptionRef = useRef<HTMLTextAreaElement>(null);
   const reporterRef = useRef<HTMLInputElement>(null);
@@ -24,29 +27,39 @@ export function RepairForm({ onCreate, onSaved }: Props) {
       else if (result.errors.reporter) reporterRef.current?.focus();
       return;
     }
-    setDescription(''); setReporter(''); setPriority('Normal'); setErrors({});
+    setDescription(''); setReporter(''); setPriority('Normal'); setCommonRepair(''); setErrors({});
     onSaved(result.value);
   }
 
-  return <section className="panel report-panel" aria-labelledby="report-heading">
-    <p className="eyebrow">01 / REPORT</p>
+  return <section id="report-repair" className="panel report-panel" aria-labelledby="report-heading">
+    <div className="panel-top"><span className="section-number">01</span><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><path d="M14.7 6.3a5 5 0 0 0-6.4 6.4L3 18a2.1 2.1 0 0 0 3 3l5.3-5.3a5 5 0 0 0 6.4-6.4L14.5 12l-2.5-2.5 2.7-3.2Z" /></svg></div>
     <h2 id="report-heading">Report a repair</h2>
-    <p className="muted">Tell us what needs attention at Meadow House.</p>
     <form onSubmit={submit} noValidate>
-      <label htmlFor="description">What needs repairing? <span className="required">(required)</span></label>
+      <div className="description-toolbar"><label htmlFor="description">What needs repairing? <span className="required">(required)</span></label>
+        <select className="common-repair-picker" aria-label="Common repairs (optional)" value={commonRepair} onChange={event => {
+          const value = event.target.value;
+          setCommonRepair(value);
+          if (value) { setDescription(value); descriptionRef.current?.focus(); }
+        }}>
+          <option value="">Choose a common repair</option>
+          {commonRepairs.map(item => <option key={item} value={item}>{item}</option>)}
+        </select></div>
       <textarea id="description" ref={descriptionRef} rows={4} value={description}
-        onChange={e => setDescription(e.target.value)} aria-required="true"
+        onChange={e => { setDescription(e.target.value); setCommonRepair(''); }} aria-required="true"
         aria-invalid={!!errors.description} aria-describedby={errors.description ? 'description-error' : undefined} />
       {errors.description && <p className="error" id="description-error">{errors.description}</p>}
-      <label htmlFor="reporter">Reporter name <span className="required">(required)</span></label>
+      <div className="form-row"><div><label htmlFor="reporter">Reporter name <span className="required">(required)</span></label>
       <input id="reporter" ref={reporterRef} value={reporter} onChange={e => setReporter(e.target.value)}
         autoComplete="name" aria-required="true" aria-invalid={!!errors.reporter}
         aria-describedby={errors.reporter ? 'reporter-error' : undefined} />
       {errors.reporter && <p className="error" id="reporter-error">{errors.reporter}</p>}
-      <label htmlFor="priority">Priority</label>
-      <select id="priority" value={priority} onChange={e => setPriority(e.target.value as Priority)}>
-        <option>Normal</option><option>Urgent</option>
-      </select>
+      </div><fieldset className="priority-field"><legend>Priority</legend>
+        <div className="priority-options">{(['Normal', 'Urgent'] as const).map(value =>
+          <label className={`priority-option priority-${value.toLowerCase()}`} key={value}>
+            <input type="radio" name="priority" value={value} checked={priority === value} onChange={() => setPriority(value)} />
+            <span>{value}</span>
+          </label>)}</div>
+      </fieldset></div>
       {errors.general && <p className="error" role="alert">{errors.general}</p>}
       <button type="submit" className="primary">Report repair</button>
     </form>

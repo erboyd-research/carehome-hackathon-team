@@ -1,27 +1,68 @@
 .job-list { list-style: none; padding: 0; margin: 1.25rem 0 0; display: grid; gap: .75rem; }
-.job-choice { display: block; width: 100%; text-align: left; background: white; padding: 1rem; }
-.job-choice.selected { border-color: var(--green); box-shadow: inset 4px 0 var(--green); background: #f0f6f2; }
+.job-choice { display: block; width: 100%; text-align: left; background: var(--field); padding: 1rem; border-color: var(--border); font-weight: 400; }
+.job-choice.selected { border-color: var(--red); box-shadow: inset 3px 0 var(--red); background: #fcf0e8; }
 .job-title { display: block; font-weight: 650; margin-bottom: .4rem; }
-.job-meta { display: block; font-size: .85rem; color: var(--muted); overflow-wrap: anywhere; }
+.job-row-title { display: flex; justify-content: space-between; gap: 1rem; }
+.job-arrow { color: var(--red); font-size: 1.1rem; flex-shrink: 0; }
+.job-meta { display: block; font-size: .875rem; color: var(--muted); overflow-wrap: anywhere; }
 .badges { display: flex; gap: .5rem; flex-wrap: wrap; margin-top: .75rem; }
-.badge { display: inline-block; background: #edf0ed; color: #37453c; padding: .3rem .6rem; border-radius: 5px; font-size: .8rem; font-weight: 650; white-space: nowrap; }
-.urgent { color: #8b261b; background: #fbe9e3; }
+.badge { display: inline-block; background: #eee7dd; color: #444b58; padding: .3rem .6rem; border-radius: 5px; font-size: .875rem; font-weight: 600; white-space: nowrap; }
+.urgent { color: #a52521; background: #fae9e5; }
 .status-in-progress { background: #fff0cf; color: #6b4700; }
-.status-completed { background: #dff1e5; color: #205337; }
+.status-completed { background: #ece7e0; color: #30394c; }
 .repair-description { margin-top: 1.5rem; }
 .details { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1.5rem 0; }
 .details div { min-width: 0; }
-.details dt { font-size: .8rem; color: var(--muted); margin-bottom: .3rem; }
+.details dt { font-size: .875rem; color: var(--muted); margin-bottom: .3rem; }
 .details dd { margin: 0; overflow-wrap: anywhere; }
 .full-width { grid-column: 1 / -1; }
-.job-id { font-family: monospace; font-size: .85rem; }
+.job-id { font-family: monospace; font-size: .875rem; }
 .update-area { margin-top: 1.5rem; }
 .actions { display: flex; gap: .75rem; flex-wrap: wrap; margin-top: .8rem; }
 .history-section { border-top: 1px solid var(--border); margin-top: 1.75rem; padding-top: 1.25rem; }
-.history { list-style: none; padding: 0 0 0 1rem; border-left: 2px solid #b6c8bd; }
+.history { list-style: none; padding: 0 0 0 1rem; border-left: 2px solid #e8c8c2; }
 .history li { padding: .25rem 0 1rem; }
 .history-top { display: flex; flex-wrap: wrap; gap: .4rem 1rem; align-items: baseline; }
 .history time { font-size: .8rem; color: var(--muted); }
 .history p { margin: .5rem 0 0; }
-.completion { background: #edf7ef; padding: 1rem; border-radius: 8px; }
-.completion p { margin-bottom: 0; }
+.latest-update { padding: 1rem; border: 1px solid var(--border); border-radius: 8px; background: var(--surface-muted); font-size: .875rem; }
+.latest-update p { margin: .5rem 0; }
+.latest-update time { color: var(--muted); font-size: .8rem; }
+.completion { background: var(--soft-red); border-color: #e5c4bc; }
+.save-update { margin-top: 1rem; }
+.open-job { display: block; color: var(--red); margin-top: .75rem; font-size: .875rem; font-weight: 600; text-decoration: underline; text-underline-offset: .2em; }
+.back-link { display: inline-block; padding: .75rem 0; margin-top: .5rem; }
+.jobs-empty { display: flex; flex-direction: column; align-items: flex-start; justify-content: center; min-height: 290px; }
+.empty-mark { display: grid; place-items: center; width: 42px; height: 42px; border: 1px solid var(--border); border-radius: 50%; color: var(--red); font-size: 1.3rem; margin-bottom: 1rem; }
+.jobs-empty h3 { font-size: 1.3rem; margin: 0 0 .7rem; }
+.jobs-empty p { color: var(--muted); margin: 0; max-width: 350px; }
+.records-panel { margin-top: 1.25rem; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; }
+.records-panel summary { display: flex; justify-content: space-between; align-items: center; gap: 1rem; list-style: none; cursor: pointer; padding: 1.25rem 1.6rem; }
+.records-panel summary::-webkit-details-marker { display: none; }
+.record-title { font-size: 1.1rem; font-weight: 600; }
+.record-summary { display: flex; gap: 1.25rem; align-items: center; color: var(--muted); font-size: .875rem; }
+.record-chevron { display: inline-block; color: var(--red); font-size: 1.5rem; transition: transform .2s ease; }
+.records-panel[open] .record-chevron { transform: rotate(180deg); }
+.record-content { border-top: 1px solid var(--border); padding: 0 1.6rem 1.3rem; }
+.record-content .job-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.record-content .empty { margin: 1.25rem 0 0; }
+.records-panel[open] .record-content { animation: reveal-record .2s ease-out; }
+@keyframes reveal-record { from { transform: translateY(-5px); } to { transform: translateY(0); } }
+.detail-panel { margin-top: 1.5rem; padding: 2rem; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-areas: 'step step' 'heading heading' 'description description' 'latest update' 'metadata update' 'history history' 'close close'; gap: 1.25rem 2.5rem; }
+.detail-panel > .eyebrow { grid-area: step; margin: 0; }
+.detail-panel > .section-title { grid-area: heading; }
+.detail-panel h2 { font-size: 1.6rem; }
+.detail-panel > .repair-description { grid-area: description; margin: 0; font-size: 1.15rem; }
+.detail-panel > .latest-update { grid-area: latest; }
+.detail-panel > .details { grid-area: metadata; margin: 0; align-content: start; }
+.detail-panel > .update-area { grid-area: update; margin: 0; }
+.update-area h3 { margin-top: 0; }
+.detail-panel > .history-section { grid-area: history; margin-top: .25rem; }
+.detail-panel > .close-repair { grid-area: close; justify-self: start; color: var(--red); border-color: var(--border); background: var(--field); }
+@media (max-width: 760px) {
+  .jobs-empty { min-height: 200px; }
+  .record-content .job-list { grid-template-columns: minmax(0, 1fr); }
+  .detail-panel { grid-template-columns: minmax(0, 1fr); grid-template-areas: 'step' 'heading' 'description' 'latest' 'metadata' 'update' 'history' 'close'; padding: 1.25rem; gap: 1rem; }
+  .records-panel summary { padding: 1.1rem 1.25rem; }
+  .record-summary { gap: .6rem; }
+}

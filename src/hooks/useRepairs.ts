@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import * as actions from '../domain/repairs';
 import { loadRepairs, saveRepairs } from '../domain/storage';
-import type { Repair, ReportInput, Result } from '../domain/types';
+import type { Repair, ReportInput, Result, Status } from '../domain/types';
 
 export function useRepairs() {
   const [initial] = useState(() => {
@@ -39,6 +39,7 @@ export function useRepairs() {
   }
 
   return { jobs, storageError, createRepair,
+    saveRepairUpdate: (id: string, status: Status, note: string) => update(id, job => actions.saveRepairUpdate(job, status, note)),
     startRepair: (id: string) => update(id, actions.startRepair),
     addProgressNote: (id: string, note: string) => update(id, job => actions.addProgressNote(job, note)),
     completeRepair: (id: string, note: string) => update(id, job => actions.completeRepair(job, note)),

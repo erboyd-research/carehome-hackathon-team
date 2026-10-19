@@ -1,3 +1,19 @@
-.report-panel form { margin-top: 1.5rem; }
-.report-panel button { width: 100%; margin-top: 1.4rem; }
+.report-panel form { margin-top: 1.25rem; }
+.report-panel button { width: 100%; margin-top: 1.5rem; min-height: 52px; font-size: 1rem; }
+.form-row { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 1.25rem; }
+.report-panel textarea { min-height: 116px; }
 .required { font-weight: 400; font-size: .85rem; color: var(--muted); }
+.description-toolbar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: .5rem 1rem; margin-bottom: .45rem; }
+.description-toolbar > label { margin: 0; }
+.common-repair-picker { width: auto; max-width: 100%; min-height: 38px; padding: .4rem .65rem; font-size: .875rem; }
+.priority-field { min-width: 0; border: 0; padding: 0; margin: 1.1rem 0 0; }
+.priority-field legend { padding: 0; margin-bottom: .45rem; font-size: .875rem; font-weight: 600; }
+.priority-options { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem; }
+.priority-option { position: relative; margin: 0; cursor: pointer; }
+.priority-option input { position: absolute; inset: 0; opacity: 0; width: 100%; height: 100%; min-height: 0; margin: 0; cursor: pointer; }
+.priority-option > span { display: flex; justify-content: center; align-items: center; border: 1px solid #b4aa9d; border-radius: 7px; min-height: 50px; background: var(--field); color: var(--ink); font-size: 1rem; font-weight: 600; transition: background-color 240ms ease, border-color 240ms ease, color 240ms ease; }
+.priority-normal:hover > span, .priority-normal input:checked + span { background: #141b2d; border-color: #141b2d; color: #fff; }
+.priority-urgent:hover > span, .priority-urgent input:checked + span { background: var(--red); border-color: var(--red); color: #fff; }
+.priority-option input:focus-visible { outline: none; }
+.priority-option input:focus-visible + span { outline: 3px solid #a52521; outline-offset: 4px; }
+@media (max-width: 480px) { .form-row { grid-template-columns: minmax(0, 1fr); gap: 0; } }

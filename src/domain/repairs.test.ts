@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { addProgressNote, completeRepair, createRepair, startRepair } from './repairs';
+import { addProgressNote, completeRepair, createRepair, startRepair, saveRepairUpdate } from './repairs';
 import { loadRepairs, saveRepairs } from './storage';
 import type { Repair, Result } from './types';
 
@@ -86,5 +86,24 @@ describe('published functional rules', () => {
   it('does not silently replace malformed saved data', () => {
     expect(() => loadRepairs({ getItem: () => '{broken' })).toThrow();
     expect(() => loadRepairs({ getItem: () => '[{}]' })).toThrow();
+  });
+  it('saves a selected status and note together in one entry', () => {
+    const original = report();
+    const updated = unwrap(saveRepairUpdate(original, 'In Progress', 'Temporary barrier fitted'));
+    expect(updated.history).toHaveLength(2);
+    expect(updated.status).toBe('In Progress');
+    expect(updated.history.at(-1)).toMatchObject({ status: 'In Progress', note: 'Temporary barrier fitted' });
+    expect(original.status).toBe('New');
+    expect(original.history).toHaveLength(1);
+  });
+  it('does not apply a draft status with a rejected note', () => {
+    const original = unwrap(saveRepairUpdate(report(), 'In Progress', 'Temporary barrier fitted'));
+    const before = structuredClone(original);
+    for (const note of ['', '   ']) {
+      expect(saveRepairUpdate(original, 'Completed', note).ok).toBe(false);
+      expect(original).toEqual(before);
+    }
+    const completed = unwrap(saveRepairUpdate(original, 'Completed', 'Fence repaired and checked'));
+    expect(completed.history.map(e => e.status)).toEqual(['New', 'In Progress', 'Completed']);
   });
 });

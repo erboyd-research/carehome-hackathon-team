@@ -38,3 +38,16 @@ export function completeRepair(repair: Repair, note: string): Result<Repair> {
   if (!note.trim()) return { ok: false, errors: { note: 'Explain what was repaired before completing the job.' } };
   return { ok: true, value: append(repair, 'Completed', note.trim()) };
 }
+
+// Validate the chosen status and explanation before producing one new history entry.
+export function saveRepairUpdate(repair: Repair, status: Status, note: string): Result<Repair> {
+  if (!['New', 'In Progress', 'Completed'].includes(status)) {
+    return { ok: false, errors: { status: 'Choose New, In Progress or Completed.' } };
+  }
+  if (!note.trim()) {
+    return { ok: false, errors: { note: status === 'Completed'
+      ? 'Explain what was repaired before completing the job.'
+      : 'Enter a note explaining this update before saving.' } };
+  }
+  return { ok: true, value: append(repair, status, note.trim()) };
+}

@@ -26,5 +26,5 @@ export interface ReportInput {
   priority: Priority;
 }
 
-export type FieldErrors = Partial<Record<'description' | 'reporter' | 'priority' | 'note' | 'general', string>>;
+export type FieldErrors = Partial<Record<'description' | 'reporter' | 'priority' | 'status' | 'note' | 'general', string>>;
 export type Result<T> = { ok: true; value: T } | { ok: false; errors: FieldErrors };
