@@ -1,3 +1,20 @@
 .report-panel form { margin-top: 1.5rem; }
+.report-panel form > label:first-child { margin-top: 0; }
 .report-panel button { width: 100%; margin-top: 1.4rem; }
-.required { font-weight: 400; font-size: .85rem; color: var(--muted); }
+.required { font-weight: 400; font-size: .875rem; color: var(--muted); }
+
+/* Helper text sits directly under its control; errors follow it. */
+.report-panel .field-hint { margin: .4rem 0 0; font-size: .875rem; }
+.report-panel .field-error { margin: .5rem 0 0; padding-left: .6rem; border-left: 3px solid #a0211b; font-weight: 600; }
+.report-panel .error-prefix { font-weight: 700; }
+
+/* Keep keyboard focus clearly visible on every report control, including when a field is also invalid. */
+.report-panel input:focus-visible,
+.report-panel select:focus-visible,
+.report-panel textarea:focus-visible,
+.report-panel button:focus-visible {
+  outline: 3px solid #155ec7;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 5px #fff;
+}
+.report-panel [aria-invalid="true"]:focus-visible { border-color: #a0211b; }
